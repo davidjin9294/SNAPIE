@@ -1,6 +1,6 @@
 process igv_reports {
     label 'high_cpu_high_plus_mem'
-    container = params.containers.igv_reports
+    container params.containers.igv_reports
     tag "All Samples"
 
     publishDir "$path_sample_multiqc", mode : 'copy'
@@ -27,7 +27,7 @@ process igv_reports {
 
 process igv_sample_reports {
     label 'high_cpu_high_plus_mem'
-    container = params.containers.igv_reports
+    container params.containers.igv_reports
     tag "Sample - $sampleId"
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
@@ -46,13 +46,28 @@ process igv_sample_reports {
 
     script:
     """
-    create_report $house_keeping_genes --fasta $genomeFile --tracks $bedgraph --output $htmlFile 
+    if [[ "${enrichment_mark}" == "no_enrichment_mark" ]]; then
+cat > "${htmlFile}" <<EOF
+<html>
+<head>
+  <title>${sampleId} IGV housekeeping genes report</title>
+</head>
+<body>
+  <h3>${sampleId}</h3>
+  <p>Skipped IGV housekeeping gene report because enrichment_mark is no_enrichment_mark.</p>
+</body>
+</html>
+EOF
+    else
+	create_report $house_keeping_genes --fasta $genomeFile --tracks $bedgraph --output $htmlFile 
+    fi
+
     """
 }
 
 process igv_consolidate_report {
     label 'low_cpu_low_plus_mem'
-    container = params.containers.ubuntu
+    container params.containers.ubuntu
     tag "All Samples"
 
     //publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/BAM_SIGNAL_PROCESSING/", mode : 'copy'
@@ -83,7 +98,7 @@ process igv_consolidate_report {
 
 process igv_session {
     label 'med_cpu_med_mem'
-    container = params.containers.python
+    container params.containers.python
     tag "All Samples"
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/igv_session/", mode : 'copy'

@@ -2,7 +2,7 @@ process createMotifGCfile {
   label 'process_medium'
 
   //Docker Image
-  container = params.containers.bedtools
+  container params.containers.bedtools
 
   tag "Sample - $sampleId"  
 
@@ -28,7 +28,7 @@ process createMotifGCfile {
 
   script:
   def motifCommand = ""
-  if (read_method == "PE") {
+  if (read_method == "PE" && enrichment_mark != "no_enrichment_mark") {
     motifCommand = """
     #Generate BEDPE files
     bedtools bamtobed -bedpe -i $sampleBam | \\
@@ -55,7 +55,7 @@ process createMotifGCfile {
     """
   } else {
     motifCommand = """
-    touch mark_for_deletion_$strBPmotif  # Create an empty file because this analysis is not valid for single-end reads
+    touch mark_for_deletion_$strBPmotif  # Create an empty file because this analysis is not valid for single-end reads and not need for lpwgs
     """
   }
   
