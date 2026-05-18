@@ -1,6 +1,6 @@
 process createGenomeIndex {
     label 'high_cpu_high_mem'
-    container = params.containers.bwa
+    container params.containers.bwa
 
     tag "Creating Index - $genome" 
 

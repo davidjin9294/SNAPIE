@@ -1,7 +1,7 @@
 process enrichment {
   label 'process_medium'
 
-  container = params.containers.samtools
+  container params.containers.samtools
 
   tag "Sample - $sampleId"   
 

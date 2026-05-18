@@ -2,7 +2,7 @@ process fetch_chrom_sizes{
   label 'process_low'
   
   //Docker Image
-  container = params.containers.ucsc_fetchchromsizes
+  container params.containers.ucsc_fetchchromsizes
 
   tag "Fetch Chrom Sizes - $genome"   
   //publishDir "$refDir/genome", mode : 'copy'

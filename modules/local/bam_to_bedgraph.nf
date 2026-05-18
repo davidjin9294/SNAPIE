@@ -1,6 +1,6 @@
 process bam_to_bedgraph {
   label 'med_cpu_med_mem'
-  container = params.containers.bedtools
+  container params.containers.bedtools
 
   tag "Sample - $sampleId"  
 

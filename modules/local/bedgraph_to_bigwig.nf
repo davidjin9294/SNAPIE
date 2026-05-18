@@ -2,7 +2,7 @@ process bedgraph_to_bigwig {
     label 'med_cpu_med_mem'
     tag "Sample - $sampleId"  
 
-    container = params.containers.bedgraphtobigwig
+    container params.containers.bedgraphtobigwig
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/peaks/${sampleId}", mode : 'copy'
 

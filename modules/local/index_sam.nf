@@ -1,7 +1,7 @@
 process index_sam {
   label 'low_cpu_low_mem'
 
-  container = params.containers.samtools
+  container params.containers.samtools
 
   tag "Sample - $sampleId"   
 

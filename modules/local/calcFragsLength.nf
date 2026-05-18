@@ -1,6 +1,6 @@
 process calcFragsLengthDistribuition {
   label 'med_cpu_med_mem'
-  container = params.containers.deeptools
+  container params.containers.deeptools
 
   tag "Sample - $sampleId"  
   publishDir "${workflow.projectDir}/${params.outputFolder}/frags/${sampleId}", mode : 'copy'

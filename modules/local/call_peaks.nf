@@ -1,6 +1,6 @@
 process call_peaks {
   label 'low_cpu_low_mem'
-  container = params.containers.macs2
+  container params.containers.macs2
 
   tag "Sample - $sampleId"   
 

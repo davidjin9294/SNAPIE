@@ -1,6 +1,6 @@
 process peaks_annotations {
     label 'low_cpu_low_mem'
-    container = params.containers.snap_genomic_annotation
+    container params.containers.snap_genomic_annotation
     tag "All Samples" 
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'

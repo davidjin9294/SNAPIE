@@ -3,7 +3,7 @@ process createSMaSHFingerPrint {
     label 'med_cpu_med_mem'
     tag "All Samples"
 
-    container = params.containers.python
+    container params.containers.python
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/SMaSH/", mode: 'copy'
 
@@ -48,7 +48,7 @@ process createSMaSHFingerPrint {
 process createSMaSHFingerPrintPlot{
     label 'med_cpu_med_mem'
 
-    container = params.containers.snp_smash_plot
+    container params.containers.snp_smash_plot
 
     tag "All Samples"   
 
@@ -67,7 +67,7 @@ process createSMaSHFingerPrintPlot{
     if [[ ! -s "$chSMaSHOutout" ]]; then
         touch empty.jpg
     else
-        python3 $chSNPSMaSHPyPlot -i $chSMaSHOutout -o Dendrogram_of_Samples_by_SNP_Profile.jpg --logp-max 50 --cmap coolwarm
+        python3 $chSNPSMaSHPyPlot -i $chSMaSHOutout -o Dendrogram_of_Samples_by_SNP_Profile.jpg --logp-max 400 --cmap coolwarm
     fi
     """
 }

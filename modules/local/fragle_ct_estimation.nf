@@ -1,7 +1,7 @@
 process fragle_ct_estimation {
 
     label 'high_cpu_high_plus_mem'
-    container = params.containers.fragle
+    container params.containers.fragle
 
     tag "All Samples"
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/fragle/", mode : 'copy'

@@ -1,7 +1,7 @@
 process multiqc {
     label 'process_medium'
     tag "All Samples" 
-    container = params.containers.multiqc 
+    container params.containers.multiqc 
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
     
@@ -23,7 +23,7 @@ process multiqc {
 process multiqc_fragments_processing {
     label 'process_medium'
     tag "All Samples" 
-    container = params.containers.multiqc 
+    container params.containers.multiqc 
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
     
@@ -44,7 +44,7 @@ process multiqc_fragments_processing {
 process multiqc_bam_processing {
     label 'process_medium'
     tag "All Samples" 
-    container = params.containers.multiqc 
+    container params.containers.multiqc 
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
     
@@ -65,7 +65,7 @@ process multiqc_bam_processing {
 process multiqc_bam_signal_processing {
     label 'process_medium'
     tag "All Samples" 
-    container = params.containers.multiqc 
+    container params.containers.multiqc 
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
     
@@ -86,7 +86,7 @@ process multiqc_bam_signal_processing {
 process multiqc_initialization {
     label 'process_medium'
     tag "All Samples" 
-    container = params.containers.multiqc 
+    container params.containers.multiqc 
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
     

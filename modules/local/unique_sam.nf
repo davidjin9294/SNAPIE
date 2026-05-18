@@ -1,7 +1,7 @@
 process unique_sam {
   label 'process_low'
 
-  container = params.containers.samtools
+  container params.containers.samtools
 
   tag "Sample - $sampleId" 
   

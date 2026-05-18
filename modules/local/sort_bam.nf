@@ -1,7 +1,7 @@
 process sort_bam {
   label 'low_cpu_high_mem'
 
-  container = params.containers.samtools
+  container params.containers.samtools
 
   tag "Sample - $sampleId" 
   
@@ -32,7 +32,7 @@ process sort_bam {
 process sort_readname_bam {
   label 'low_cpu_high_mem'
 
-  container = params.containers.samtools
+  container params.containers.samtools
 
   tag "Sample - $sampleId" 
   

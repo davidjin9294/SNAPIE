@@ -1,7 +1,7 @@
 process align {
   label 'high_cpu_high_mem'
 
-  container = params.containers.bwa_and_samtools
+  container params.containers.bwa_and_samtools
 
   tag "Sample - $sampleId"
   //publishDir "${workflow.projectDir}/${params.outputFolder}/align/${sampleId}", mode : 'copy'

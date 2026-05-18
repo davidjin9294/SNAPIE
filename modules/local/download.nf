@@ -5,7 +5,7 @@ process downloadSNPRef {
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode: 'copy'
 
-    container = params.containers.wget
+    container params.containers.wget
 
     input:
     tuple val(genome), val(_), val(_), val(_), val(snp), val(_)
@@ -49,7 +49,7 @@ process downloadTSSPromoterPeaks {
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode: 'copy'
 
-    container = params.containers.wget
+    container params.containers.wget
 
     input:
     tuple val(genome), val(_), val(_), val(_), val(_), val(tssPromoterPeaks)
@@ -91,7 +91,7 @@ process downloadDACFile {
     label 'low_cpu_low_mem'
     tag "Dowloading DAC File - ${genome}"
 
-    container = params.containers.wget
+    container params.containers.wget
 
     input:
     tuple val(genome), val(faGZFile), val(geneAnnotation), val(dacList), val(snp), val(tssPromoterPeaks)
@@ -155,7 +155,7 @@ process downloadGeneAnotation {
     label 'low_cpu_low_mem'
     tag "Dowloading Gene Anotation File - $genome" 
 
-    container = params.containers.wget
+    container params.containers.wget
     
     input:
     tuple val(genome), val(faGZFile), val(geneAnnotation), val(dacList), val(snp), val(tssPromoterPeaks)
@@ -186,7 +186,7 @@ process downloadGenome {
     tag "Dowloading - $genome" 
     //publishDir "$genomeOut", mode : 'copy'
 
-    container = params.containers.wget
+    container params.containers.wget
     
     exec:
     genomeOut = refDir

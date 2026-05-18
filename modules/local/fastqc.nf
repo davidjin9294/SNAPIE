@@ -1,7 +1,7 @@
 process fastqc {
   label 'med_cpu_med_mem'
 
-  container = params.containers.fastqc
+  container params.containers.fastqc
 
   tag "Sample - $sampleId"  
   publishDir "${workflow.projectDir}/${params.outputFolder}/fastqc/${sampleId}", mode : 'copy'

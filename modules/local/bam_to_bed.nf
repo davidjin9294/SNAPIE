@@ -2,7 +2,7 @@ process bam_to_bed {
   label 'process_medium'
 
   //Docker Image
-  container = params.containers.bedtools
+  container params.containers.bedtools
 
   tag "Sample - $sampleId"  
 

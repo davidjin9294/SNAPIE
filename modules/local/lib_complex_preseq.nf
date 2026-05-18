@@ -1,6 +1,6 @@
 process lib_complex_preseq {
   label 'med_cpu_high_mem'
-  container = params.containers.preseq
+  container params.containers.preseq
 
   tag "Sample - $sampleId"  
 

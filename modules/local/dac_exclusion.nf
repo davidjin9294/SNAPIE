@@ -1,7 +1,7 @@
 process dac_exclusion {
   label 'low_cpu_low_mem'
 
-  container = params.containers.bedtools
+  container params.containers.bedtools
   
   tag "Sample - $sampleId"  
   publishDir "${workflow.projectDir}/${params.outputFolder}/align/${sampleId}", mode : 'copy'

@@ -1,7 +1,7 @@
 process dedup {
   label 'process_high'
 
-  container = params.containers.picard
+  container params.containers.picard
 
   tag "Sample - $sampleId"  
   

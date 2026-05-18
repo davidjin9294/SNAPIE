@@ -1,7 +1,7 @@
 process unique_frags {
   label 'process_low'
 
-  container = params.containers.ubuntu
+  container params.containers.ubuntu
 
   tag "Sample - $sampleId" 
   publishDir "${workflow.projectDir}/${params.outputFolder}/frags/${sampleId}", mode : 'copy'

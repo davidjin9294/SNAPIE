@@ -1,7 +1,7 @@
 process filter_properly_paired {
   label 'low_cpu_high_mem'
 
-  container = params.containers.samtools
+  container params.containers.samtools
 
   tag "Sample - $sampleId" 
   

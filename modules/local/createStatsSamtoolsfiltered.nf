@@ -1,6 +1,6 @@
 process createStatsSamtoolsfiltered {
     label 'low_cpu_low_mem'
-    container = params.containers.samtools
+    container params.containers.samtools
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/align/${sampleId}", mode : 'copy'
     

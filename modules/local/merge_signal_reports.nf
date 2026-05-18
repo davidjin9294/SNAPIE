@@ -1,6 +1,6 @@
 process merge_signal_reports {
     label 'low_cpu_low_mem'
-    container = params.containers.python
+    container params.containers.python
     tag "Sample - $sampleId"
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode: 'copy'

@@ -1,7 +1,7 @@
 process trim {
   label 'med_cpu_high_mem'
 
-  container = params.containers.trim_galore
+  container params.containers.trim_galore
 
   tag "Sample - $sampleId"
   //publishDir "${workflow.projectDir}/${params.outputFolder}/trim/${sampleId}", mode: 'copy'
@@ -37,7 +37,8 @@ process trim {
 process trim_fastp {
   label 'med_cpu_high_mem'
 
-  container = params.containers.fastp
+
+  container params.containers.fastp
 
   tag "Sample - $sampleId"
   //publishDir "${workflow.projectDir}/${params.outputFolder}/trim/${sampleId}", mode: 'copy'
