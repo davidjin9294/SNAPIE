@@ -3,6 +3,7 @@ nextflow.enable.dsl=2
 include {call_peaks} from '../../modules/local/call_peaks'
 include {peaks_annotations} from '../../modules/local/peaks_annotations.nf'
 include {peaks_report} from '../../modules/local/peaks_report.nf'
+include {frip_report} from '../../modules/local/frip_report.nf'
 include {bam_to_bedgraph} from '../../modules/local/bam_to_bedgraph'
 include {bedgraph_to_bigwig} from '../../modules/local/bedgraph_to_bigwig'
 include {igv_reports} from '../../modules/local/igv_reports'
@@ -113,6 +114,14 @@ workflow BAM_SIGNAL_PROCESSING {
 
     chPeaksFilesReport = peaks_report(chNarrowPeakFiles,chMultiQCPeaksHeader,chReportPeaks)
 
+    // FRiP
+    chBedsAllFilesForFrip = chBedFiles.collect()
+    chOnlyBedFilesForFrip = chBedsAllFilesForFrip.map { collectedFiles ->
+        collectedFiles.findAll { it.toString().endsWith('.bed') }
+    }
+
+    chFripReport = frip_report(chOnlyBedFilesForFrip, chNarrowPeakFiles)
+
      if (params.report_peak_genomic_annotation == true){
         chPeaksAnnotationReport = peaks_annotations(chNarrowPeakFiles,chRGenomicAnnotation)
      } else {
@@ -135,7 +144,7 @@ workflow BAM_SIGNAL_PROCESSING {
     //********************************
     //********************************
 
-    quality_report_lite(chReportQualityLite,chEnrichmentFilesReport,chPeaksFilesReport,chFragsProcessReport,chCTFragleFilesReport)
+    quality_report_lite(chReportQualityLite,chEnrichmentFilesReport,chPeaksFilesReport,chFragsProcessReport,chCTFragleFilesReport,chFripReport)
     //chReportQualityLite.view()
     //signal_report_lite(chMergedSignalReport)
     

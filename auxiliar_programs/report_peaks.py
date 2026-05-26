@@ -64,37 +64,60 @@ head_file_content_peaks = read_file(head_file_peaks)
 
 peak_files = find_files_with_suffix(current_directory, suffix_peak) 
 
-def create_dataframe_from_content_files(file_list,sufix,nameColumn,read_content=True):
+def create_peak_summary_dataframe(file_list, suffix):
     """
-    Reads a list of files and returns a DataFrame containing the file name and its content.
-
-    :param file_list: List of file paths to read.
-    :return: A pandas DataFrame with columns 'File Name' and 'Content'.
+    For each narrowPeak file, count:
+      1. total number of peaks
+      2. number of peaks with fold_enrichment > 10
+      3. number of peaks with fold_enrichment > 20
     """
     data = []
 
     for file_path in file_list:
+        sample_name = os.path.basename(file_path).replace(suffix, '')
+
+        total_peaks = 0
+        peaks_fe_gt10 = 0
+        peaks_fe_gt20 = 0
+
         try:
             with open(file_path, 'r') as file:
-                if read_content == True:
-                    content = file.read().strip()
-                else:
-                    content = sum(1 for _ in file)
-                data.append({
-                    'SampleName': os.path.basename(file_path).replace(sufix,''),  # Extract only the file name
-                    nameColumn: content
-                })
+                for line in file:
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    fields = line.split('\t')
+
+                    # narrowPeak column 7 = signalValue/fold enrichment
+                    try:
+                        fold_enrichment = float(fields[6])
+                    except (IndexError, ValueError):
+                        continue
+
+                    total_peaks += 1
+
+                    if fold_enrichment > 10:
+                        peaks_fe_gt10 += 1
+
+                    if fold_enrichment > 20:
+                        peaks_fe_gt20 += 1
+
+            data.append({
+                'SampleName': sample_name,
+                'Peaks': total_peaks,
+                'Peaks_FE_gt10': peaks_fe_gt10,
+                'Peaks_FE_gt20': peaks_fe_gt20
+            })
+
         except FileNotFoundError:
             print(f"Error: The file '{file_path}' was not found.")
         except IOError as e:
             print(f"Error: Could not read the file '{file_path}': {e}")
 
-    # Create the DataFrame
-    df = pd.DataFrame(data)
-    return df
+    return pd.DataFrame(data)
 
-df_peaks = create_dataframe_from_content_files(peak_files,suffix_peak,'Peaks',False)
-#merged_df = pd.merge(df_frags, df_peaks, on='SampleName', how='inner')
+df_peaks = create_peak_summary_dataframe(peak_files, suffix_peak)
 
 # CSV file path
 csv_file_peaks = "peaks_mqc.csv"
