@@ -28,7 +28,7 @@ process createMotifGCfile {
 
   script:
   def motifCommand = ""
-  if (read_method == "PE" && enrichment_mark != "no_enrichment_mark") {
+  if (read_method == "PE") {
     motifCommand = """
     #Generate BEDPE files
     bedtools bamtobed -bedpe -i $sampleBam | \\
