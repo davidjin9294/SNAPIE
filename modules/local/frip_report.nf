@@ -1,6 +1,6 @@
 process frip_report {
     label 'low_cpu_low_mem'
-    container = params.containers.bedtools
+    container params.containers.bedtools
     tag "All Samples"
 
     input:
