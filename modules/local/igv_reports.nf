@@ -46,21 +46,7 @@ process igv_sample_reports {
 
     script:
     """
-    if [[ "${enrichment_mark}" == "no_enrichment_mark" ]]; then
-cat > "${htmlFile}" <<EOF
-<html>
-<head>
-  <title>${sampleId} IGV housekeeping genes report</title>
-</head>
-<body>
-  <h3>${sampleId}</h3>
-  <p>Skipped IGV housekeeping gene report because enrichment_mark is no_enrichment_mark.</p>
-</body>
-</html>
-EOF
-    else
-	create_report $house_keeping_genes --fasta $genomeFile --tracks $bedgraph --output $htmlFile 
-    fi
+    create_report $house_keeping_genes --fasta $genomeFile --tracks $bedgraph --output $htmlFile 
 
     """
 }
