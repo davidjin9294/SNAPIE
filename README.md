@@ -117,7 +117,7 @@ Then, set:
 
 ---
 
-## Providing Input via Spreadsheet (FASTA)
+## Providing Input via Spreadsheet (FASTQ)
 To provide input using a spreadsheet, use the `--samplesheetfasta` parameter. This expects a **CSV file** with the following structure:
 
 sampleId, enrichment_mark, read1, read2,control
