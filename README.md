@@ -123,7 +123,7 @@ To provide input using a spreadsheet, use the `--samplesheetfasta` parameter. Th
 sampleId, enrichment_mark, read1, read2,control
 
 - The **enrichment_mark** field can be left blank if no enrichment mark calculation is required.
-- The **read2** field can be left blank for **single-end** FASTA files.
+- The **read2** field can be left blank for **single-end** FASTQ files.
 - The **control** field is used to indicate which sample will serve as the control reference for each experimental sample. In this column, you should provide the sampleId of the control sample (which must also be included in the sample sheet like any other sample).
   If you leave the field blank, the sample will not have an associated control.
   If multiple samples share the same control, you can repeat the control sampleId in their rows.
@@ -200,7 +200,7 @@ The SNAPIE pipeline is pre-configured to support:
 - **hg19**
 - **hg38**
 
-For these references, no additional downloads are required—the necessary FASTA files, **blacklist regions**, and SNP files for sample identification are already available in:
+For these references, no additional downloads are required—the necessary FASTQ files, **blacklist regions**, and SNP files for sample identification are already available in:
 ref_files/genome/genome_paths.csv
 
 If using a **custom reference genome**, provide a **local version** of this file and specify:
@@ -375,11 +375,11 @@ output_folder/
 
 ## Usage Examples
 
-Below are some practical examples showing how to run the SNAPIE pipeline in different scenarios. These examples aim to help you get started quickly, whether you’re working with FASTA or BAM files, using spreadsheets or directory-based input.
+Below are some practical examples showing how to run the SNAPIE pipeline in different scenarios. These examples aim to help you get started quickly, whether you’re working with FASTQ or BAM files, using spreadsheets or directory-based input.
 
-#### `Example 1: Running the pipeline with FASTA files using a spreadsheet/`
+#### `Example 1: Running the pipeline with FASTQ files using a spreadsheet/`
 
-In this example, we assume you have sequencing files in compressed FASTA format (.fasta.gz) and a spreadsheet that specifies the location of each read file. Your reference genome is hg19.
+In this example, we assume you have sequencing files in compressed FASTQ format and a spreadsheet that specifies the location of each read file. Your reference genome is hg19.
 
 You can run the pipeline with the following command:
 
@@ -390,11 +390,11 @@ Explanation of the parameters:
 	-profile docker_light_macos** - chooses the appropriate environment profile (in this case, lightweight Docker for macOS)
 	--genome hg19 — specifies the reference genome
 	--outputFolder result_analysis — sets the output directory
-	--samplesheetfasta control_sample_sheet.csv — provides the path to your input spreadsheet (FASTA mode)
+	--samplesheetfasta control_sample_sheet.csv — provides the path to your input spreadsheet (FASTQ mode)
  
-#### `Example 2: Running the pipeline with FASTA files organized in subdirectories (no spreadsheet)`
+#### `Example 2: Running the pipeline with FASTQ files organized in subdirectories (no spreadsheet)`
 
-In this example, your FASTA files are stored in a root directory (sample_folder), where each sample has its own subdirectory named after the sample, and the corresponding .fasta.gz files are located inside these subdirectories.
+In this example, your FASTQ files are stored in a root directory (sample_folder), where each sample has its own subdirectory named after the sample, and the corresponding .fq.gz files are located inside these subdirectories.
 
 If your files follow this structure, you do not need to manually create a sample sheet — the pipeline will generate it automatically.
 
