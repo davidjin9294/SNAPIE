@@ -62,7 +62,7 @@ There are two ways to provide input files to the pipeline:
 2. A **spreadsheet** with basic metadata about the files.  
 
 The input files can be of three types:  
-- **FASTA files**  
+- **FASTQ files**  
 - **Raw BAM files** (generated immediately after alignment with a reference genome)  
 - **Processed BAM files** (expected to be sorted, deduplicated, and filtered for unique reads)  
 
@@ -70,21 +70,21 @@ Below is a detailed explanation of how to use each method.
 
 ---
 
-## Providing Input as FASTA Files
-If your sample files are in **FASTA format**, use the `--sample_dir_fasta` parameter. The pipeline assumes that each sample is stored in a separate directory, and all files within that directory belong to the corresponding sample.  
+## Providing Input as FASTQ Files
+If your sample files are in **FASTQ format**, use the `--sample_dir_fasta` parameter. The pipeline assumes that each sample is stored in a separate directory, and all files within that directory belong to the corresponding sample.  
 
 ### Example Directory Structure:
 
 ```
 Sample_folder/
 ├── Sample1/
-│   ├── Sample1_ABC_123_1.fasta
-│   ├── Sample1_ABC_123_2.fasta
+│   ├── Sample1_ABC_123_1.fastq
+│   ├── Sample1_ABC_123_2.fastq
 ├── Sample2/
-│   ├── Sample2_ABC_123_1.fasta
-│   ├── Sample2_ABC_123_2.fasta
+│   ├── Sample2_ABC_123_1.fastq
+│   ├── Sample2_ABC_123_2.fastq
 ├── Sample3/
-│   ├── Sample3_ABC_123.fasta
+│   ├── Sample3_ABC_123.fastq
 ```
 
 ### Automatic Spreadsheet Generation
