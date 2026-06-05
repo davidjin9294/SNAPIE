@@ -92,7 +92,7 @@ When using this method, the pipeline will generate a **spreadsheet** (`CSV forma
 
 sampleId, enrichment_mark, read1, read2, control
 
-- The pipeline supports both **paired-end** and **single-end** FASTA files.
+- The pipeline supports both **paired-end** and **single-end** FASTQ files.
 - You can specify which **enrichment mark** should be calculated using the `--enrichment_mark` parameter.
 
 ### Enrichment Marks
