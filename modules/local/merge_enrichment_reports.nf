@@ -1,7 +1,7 @@
 process merge_enrichment_reports {
     label 'low_cpu_low_mem'
     container = params.containers.python
-    tag "Sample - $sampleId"
+    tag "All samples"
 
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode: 'copy'
 
@@ -9,7 +9,6 @@ process merge_enrichment_reports {
     path (chEnrichmentFilesReport)
     each path (chMultiQCEnrichmentHeader)
     each path (chMergeReportEnrichment)
-    tuple val (sampleId), val (enrichment_mark), val(bam), val(control), val(read_method) 
     
     output:
     path ("*.csv")
@@ -22,7 +21,7 @@ process merge_enrichment_reports {
     # create an empty one to satisfy the output requirement but that is not going to be used by multiqc
 
     if ! ls *_mqc.csv 1> /dev/null 2>&1; then
-        touch ${sampleId}.csv
+        touch no_enrichment_data.csv
     fi
     """
 }
