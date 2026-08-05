@@ -29,7 +29,7 @@ process quality_filter {
 
   cat <<-END_VERSIONS > samtools_QualityFilter_mqc_versions.yml
   "${task.process}":
-    samtools: \$(samtools --version | sed 's/^.*samtools //; s/Using.*\$//')
+    samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
   END_VERSIONS
   """
 }
