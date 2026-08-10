@@ -20,6 +20,7 @@ include {quality_report_lite} from '../../modules/local/quality_report_lite'
 include {signal_report_lite} from '../../modules/local/signal_report_lite'
 include {multiqc} from '../../modules/local/multiqc'
 include {moveSoftFiles} from '../../modules/local/moveSoftFiles'
+include {psas_calculate} from '../../modules/local/psas_calculate'
 
 workflow BAM_SIGNAL_PROCESSING {
 
@@ -63,6 +64,8 @@ workflow BAM_SIGNAL_PROCESSING {
     chMultiQCSignalHeader
     chMergeReportSignal
     chFragsProcessReport
+    chPSASResults
+    chPSASCalculate
     
 
     main:
@@ -88,6 +91,21 @@ workflow BAM_SIGNAL_PROCESSING {
     chSamplesListMix = chSamplesListFilter.mix(chSamplesListNoControl)
 
     chPeakFiles = call_peaks(chSamplesListMix)
+
+    // Calculate PSAS only when requested, after matching each BAF TSV to its MACS2 peaks.
+    if (params.psas) {
+        chPSASBafBySample = chPSASResults.map { sampleId, bafTsv -> tuple(sampleId, bafTsv) }
+        chPSASPeakBySample = chPeakFiles.map { row -> tuple(row[0], row[5]) }
+        chPSASInput = chPSASBafBySample.join(chPSASPeakBySample)
+        chPSASScores = psas_calculate(chPSASInput, chPSASCalculate)
+        chPSASFilesForReport = chPSASScores
+            .map { sampleId, psasFile -> psasFile }
+            .mix(Channel.value(file(params.dummy_control_file)))
+            .collect()
+    } else {
+        chPSASScores = Channel.of("NO_DATA")
+        chPSASFilesForReport = Channel.value([file(params.dummy_control_file)])
+    }
 
     //CHROMATIN COUNT NORMALIZATION *******************************
     chReferenceSitesCCN = params.chromatin_count_reference ? \
@@ -135,7 +153,7 @@ workflow BAM_SIGNAL_PROCESSING {
     //********************************
     //********************************
 
-    quality_report_lite(chReportQualityLite,chEnrichmentFilesReport,chPeaksFilesReport,chFragsProcessReport,chCTFragleFilesReport)
+    quality_report_lite(chReportQualityLite,chEnrichmentFilesReport,chPeaksFilesReport,chFragsProcessReport,chCTFragleFilesReport,chPSASFilesForReport)
     //chReportQualityLite.view()
     //signal_report_lite(chMergedSignalReport)
     
