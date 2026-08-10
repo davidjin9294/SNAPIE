@@ -34,7 +34,19 @@ def load_enrichment_csvs():
 
 df_enrichment = load_enrichment_csvs()
 
-def join_sample_dataframes(df_frags, df_peaks, df_fragle,df_enrichment):
+def load_psas_tsvs():
+    psas_files = [
+        f for f in os.listdir(os.getcwd())
+        if f.endswith('.psas.tsv')]
+
+    if psas_files:
+        dataframes = [pd.read_csv(f, sep='\t', na_values=['NA']) for f in psas_files]
+        return pd.concat(dataframes, ignore_index=True)
+    return pd.DataFrame(columns=['sample_id', 'psas'])
+
+df_psas = load_psas_tsvs()
+
+def join_sample_dataframes(df_frags, df_peaks, df_fragle, df_enrichment, df_psas):
     merged = pd.merge(df_frags, df_peaks, on='SampleName', how='inner')
 
     if not df_fragle.empty:
@@ -42,10 +54,14 @@ def join_sample_dataframes(df_frags, df_peaks, df_fragle,df_enrichment):
         
     if not df_enrichment.empty:
         merged = pd.merge(merged, df_enrichment, on='SampleName', how='outer')
+    if not df_psas.empty:
+        merged = pd.merge(merged, df_psas, left_on='SampleName', right_on='sample_id', how='left')
+    elif 'psas' not in merged.columns:
+        merged['psas'] = ''
     return merged
 
-dfJoin = join_sample_dataframes(df_frags, df_peaks, df_fragle,df_enrichment)
-dfJoin = dfJoin.drop(columns=['on_bp', 'off_bp', 'on_reads','Sample_ID', 'off_reads'], errors='ignore')
+dfJoin = join_sample_dataframes(df_frags, df_peaks, df_fragle, df_enrichment, df_psas)
+dfJoin = dfJoin.drop(columns=['on_bp', 'off_bp', 'on_reads','Sample_ID', 'off_reads', 'sample_id'], errors='ignore')
 
 dfJoin = dfJoin.rename(columns={
     'SampleName': 'Sample',
