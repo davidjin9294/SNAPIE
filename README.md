@@ -189,6 +189,22 @@ This should be used in combination with either `--samplesheetBams` or `--sample_
 
 This reduces processing time if your BAM files have already undergone these steps.
 
+### Optional PSAS analysis
+
+PSAS genotyping and B-allele frequency (BAF) extraction are disabled by default. Enable them with
+`--psas true`.
+
+PSAS uses each sample's final BAM from BAM processing. This BAM has been deduplicated and, when
+`--exclude_dac_regions true` is enabled, has also been DAC-filtered. Results are written under
+`<outputFolder>/psas/<sample>/` as a compressed, indexed VCF, a BAF TSV, and a
+`<sample>.psas.tsv` score file. The score is calculated after MACS2 by combining the sample's BAF
+TSV with its called narrowPeak file. The final score is multiplied by -1 and its column is named
+`psas`. The per-sample scores are also added to `reports/metrics_lite/QualityMetrics.csv`.
+
+The PSAS programs receive their reference FASTA, CPU count, inputs, and outputs from Nextflow and
+do not activate Conda or rely on machine-specific paths. Container-enabled profiles use
+`davidjin9294/snapie-psas:1.0`, which must provide GATK, samtools, bcftools, and tabix.
+
 ---
 
 ## Reference Genome Selection
@@ -308,6 +324,9 @@ output_folder/
 ├── peaks/
 │   ├── Sample1/
 │   ├── Sample2/
+├── psas/
+│   ├── Sample1/
+│   ├── Sample2/
 ├── chromatin_count_normalization/
 │   ├── Sample1/
 │   ├── Sample2/
@@ -349,6 +368,9 @@ output_folder/
 #### `peaks/`
 - Contains subdirectories for each sample with peak-calling results (if applicable).
 - Include **peak files** (`.bed`, `.narrowPeak`, `.bedgraph`, `.bw`, `.control_lambda.bdg`,`.treat_pileup.bdg`,`peaks.xls).
+
+#### `psas/`
+- Contains per-sample genotype VCFs, tabix indexes, heterozygous-SNP BAF tables, and final `psas` scores when `--psas true` is enabled.
 
 #### `chromatin_count_normalization/`
 - Contains the analysis_summary.txt and also the the cpm and raw matrices used for the chromatin fragment counter
