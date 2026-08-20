@@ -73,6 +73,10 @@ dfJoin = dfJoin.rename(columns={
 })
 
 dfJoin = dfJoin.where(pd.notnull(dfJoin), '')
+dfJoin = dfJoin.sort_values(
+    by=['Sample', 'Enrichment_Mark'],
+    kind='mergesort'
+)
 
 filename = 'QualityMetrics.csv'
 dfJoin.to_csv(filename, index=False, encoding='utf-8')
