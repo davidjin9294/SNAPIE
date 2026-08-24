@@ -50,6 +50,9 @@ workflow  {
     chMergeReportSignal = Channel.fromPath("$params.pathMergeReportSignal")
     chIGVFilestoSessions = Channel.fromPath("$params.pathIGVFilestoSessions")
     chRGenomicAnnotation = Channel.fromPath("$params.pathRGenomicAnnotation")
+    chPSASGenotype = Channel.value(file(params.pathPSASGenotype))
+    chPSASSnpBaf = Channel.value(file(params.pathPSASSnpBaf))
+    chPSASCalculate = Channel.value(file(params.pathPSASCalculate))
 
     chRMEDIPSignalCalculation= Channel.fromPath("$params.pathRMEDIPSignalCalculation")
     chRMARKSSignalCalculation= Channel.fromPath("$params.pathRMARKSSignalCalculation")
@@ -134,12 +137,13 @@ workflow  {
         }
 
     if ('BAM_PROCESSING' in run_steps) {
-        BAM_PROCESSING (chSampleInfo,chGenome, chGenomeIndex,chChromSizes,chDACFileRef,chSNPS_ref,
+        BAM_PROCESSING (chSampleInfo,chGenome,refDir,chGenomeIndex,chChromSizes,chDACFileRef,chSNPS_ref,
                         chAlign,
                         chTrimmingCounts,skip_alignment,
                         chSNPSMaSH,chSNPSMaSHPyPlot,chMultiQCConfig,
                         chFilesReportInitialization,chInitReport,
-                        chFilesReportAlignment,chAlignmentReport)
+                        chFilesReportAlignment,chAlignmentReport,
+                        chPSASGenotype,chPSASSnpBaf)
 
         chBAMProcessedFiles = BAM_PROCESSING.out.bam_processed
         chBAMProcessedIndexFiles = BAM_PROCESSING.out.bam_processed_index
@@ -148,6 +152,7 @@ workflow  {
         chLibComplexPreseq = BAM_PROCESSING.out.lib_complex
         chFilesReportBamProcessing = BAM_PROCESSING.out.files_report_bam_processing
         chBAMProcessReport = BAM_PROCESSING.out.bam_process_report
+        chPSASResults = BAM_PROCESSING.out.psas_results
         }
     
     if ('FRAGMENTS_PROCESSING' in run_steps) {
@@ -178,7 +183,7 @@ workflow  {
                             chRegions_of_interest_MEDIP_signal,chRegions_of_interest_MARKS_signal,
                             chHousekeeping_MEDIP_signal,chHousekeeping_H3K4ME3_signal,chHousekeeping_H3K27AC_signal,
                             chMultiQCSignalHeader,chMergeReportSignal,
-                            chFragReport)
+                            chFragReport,chPSASResults,chPSASCalculate)
 
 
 

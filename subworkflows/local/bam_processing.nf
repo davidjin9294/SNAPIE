@@ -14,12 +14,16 @@ include {createSMaSHFingerPrintPlot} from '../../modules/local/snp_smash_fingerp
 include {multiqc} from '../../modules/local/multiqc'
 include {moveSoftFiles} from '../../modules/local/moveSoftFiles'
 include {alignment_stats_report} from '../../modules/local/alignment_stats_report'
+include {psas_genotype} from '../../modules/local/psas_genotype'
+include {psas_snp_baf} from '../../modules/local/psas_snp_baf'
+include {prepare_psas_reference} from '../../modules/local/prepare_psas_reference'
 
 workflow BAM_PROCESSING {
 
     take:
     chSampleInfo
     chGenome
+    chRefDir
     chGenomeIndex
     chChromSizes
     chDACFileRef
@@ -34,6 +38,8 @@ workflow BAM_PROCESSING {
     chInitReport
     chFilesReportAlignment
     chAlignmentReport
+    chPSASGenotype
+    chPSASSnpBaf
 
  
     main:
@@ -43,6 +49,7 @@ workflow BAM_PROCESSING {
     chLibComplexPreseq = Channel.of("NO_DATA")
     chFilesReportBamProcessing = Channel.of("NO_DATA")
     chBAMProcessReport = Channel.of("NO_DATA")
+    chPSASResults = Channel.of("NO_DATA")
 
     if (params.deduped_bam) {
 
@@ -71,6 +78,17 @@ workflow BAM_PROCESSING {
         //chDACFilteredFiles = chDedup
     } else {
         chDACFilteredFiles = chDedup
+    }
+
+    // PSAS runs on the final BAM: deduplicated and, when enabled, DAC-filtered.
+    if (params.psas) {
+        chPSASReference = prepare_psas_reference(chGenome, chRefDir)
+        chFinalBamsForPSAS = chDACFilteredFiles.map { row ->
+            tuple(row[0], row[1], row[2], row[3], row[4], row[5])
+        }
+        chPSASGenotypeInput = chFinalBamsForPSAS.combine(chPSASReference)
+        chPSASVCF = psas_genotype(chPSASGenotypeInput, chPSASGenotype)
+        chPSASResults = psas_snp_baf(chPSASVCF, chPSASSnpBaf)
     }
 
     if (!params.deduped_bam && !chSkipAlignment) {
@@ -152,4 +170,5 @@ workflow BAM_PROCESSING {
     emit: lib_complex = chLibComplexPreseq
     emit: files_report_bam_processing = chFilesReportBamProcessing
     emit: bam_process_report = chBAMProcessReport
+    emit: psas_results = chPSASResults
 }

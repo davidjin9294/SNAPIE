@@ -11,12 +11,14 @@ process quality_report_lite {
     path peaks_files
     path frags_process_report
     path files_fragle_report
+    path psas_files
 
     output:
     path "QualityMetrics.csv" 
 
     script:
+    def psasOption = params.psas ? '--psas' : ''
     """
-    python $chReportQualityLite 
+    python $chReportQualityLite $psasOption
     """
 }
