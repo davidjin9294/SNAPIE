@@ -28,6 +28,17 @@ workflow PREPROCESSING {
         | filter { row -> row.Genome == params.genome } \
         | ifEmpty { error "No matching Genome found in the GenomePaths spreadsheet. Exiting workflow." }
         | map { row-> tuple(row.Genome,row.faGZFile,row.GeneAnotation, row.DACList,row.SNP,row.TSSPromoterPeaks) }
+
+    // The dm3 metadata is kept separate from the selected primary genome.  It is
+    // used only to construct a composite alignment reference when requested.
+    chDm3Info = Channel.empty()
+    if (params.dm3_control_included) {
+        chDm3Info = Channel.fromPath(params.genomeInfoPaths) \
+            | splitCsv(header:true) \
+            | filter { row -> row.Genome == 'dm3' } \
+            | ifEmpty { error "dm3_control_included is enabled, but no dm3 row was found in ${params.genomeInfoPaths}." } \
+            | map { row-> tuple(row.Genome,row.faGZFile,row.GeneAnotation, row.DACList,row.SNP,row.TSSPromoterPeaks) }
+    }
     // Destructure and store each column into separate variables
     chGenomesInfo
         .map { genome, faGZFile, geneAnnotation, dacList, snp, tssPromoterPeaks ->
@@ -99,6 +110,7 @@ workflow PREPROCESSING {
     
     emit: sample_info = chSampleInfo
     emit: genomes_info = chGenomesInfo
+    emit: dm3_info = chDm3Info
     emit: fastqc_files = chFastaQC
     emit: ref_dir = refDir
     emit: files_report_initialization = chFilesReportInitialization
