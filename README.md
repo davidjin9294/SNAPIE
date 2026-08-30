@@ -207,6 +207,14 @@ If using a **custom reference genome**, provide a **local version** of this file
 - `--genomeInfoPaths <full_path_to_genome_paths.csv>`
 - `--genome <custom_genome_name>` (must match the **Genome** field in the CSV file)
 
+### dm3 spike-in alignment reference
+
+Set `--dm3_control_included true` to align reads against a composite reference made
+from the selected genome and dm3. The pipeline downloads the `dm3` row from
+`genome_paths.csv`, prefixes dm3 contigs with `dm3_`, and creates a new BWA index
+for `<genome>_dm3.fa`. It also creates matching `<genome>_dm3.chrom.sizes` and a
+BED3-normalized `<genome>_dm3.DAC.bed`. The default is `false`.
+
 ---
 
 ## Pipeline Execution Phases
