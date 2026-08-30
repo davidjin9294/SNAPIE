@@ -93,6 +93,7 @@ workflow  {
     if ('PREPROCESSING' in run_steps) {
         PREPROCESSING(chMultiQCConfig,skip_alignment)
         chGenomesInfo = PREPROCESSING.out.genomes_info
+        chDm3Info = PREPROCESSING.out.dm3_info
         refDir = PREPROCESSING.out.ref_dir
         chSampleInfo = PREPROCESSING.out.sample_info
         chFastaQC = PREPROCESSING.out.fastqc_files
@@ -101,7 +102,7 @@ workflow  {
         }
 
     if ('DOWNLOAD_REFERENCES' in run_steps) {
-        DOWNLOAD_REFERENCES(chGenomesInfo,refDir)
+        DOWNLOAD_REFERENCES(chGenomesInfo,chDm3Info,refDir)
 
         chGenome = DOWNLOAD_REFERENCES.out.genome
         chGenomeIndex = DOWNLOAD_REFERENCES.out.genome_index
