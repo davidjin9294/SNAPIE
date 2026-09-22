@@ -101,6 +101,11 @@ By default, the SNAPIE pipeline supports the following enrichment marks:
 - **H3K27ac**
 - **MeDIP**
 
+Peak calling uses the `broad_peak_marks` list in `nextflow.config` (currently
+`H3K36me3` and `H3K27me3`). Add another mark to that list to call broad peaks
+for it. Mark matching for peak mode ignores case. All other marks use narrow
+peaks. Broad peaks are saved as `.broadPeak`; narrow peaks as `.narrowPeak`.
+
 The reference files required for this calculation are stored in:
 
 ref_files/enrichment_states/enrichment_mark/
@@ -352,7 +357,7 @@ output_folder/
 
 #### `peaks/`
 - Contains subdirectories for each sample with peak-calling results (if applicable).
-- Include **peak files** (`.bed`, `.narrowPeak`, `.bedgraph`, `.bw`, `.control_lambda.bdg`,`.treat_pileup.bdg`,`peaks.xls).
+- Include **peak files** (`.bed`, `.narrowPeak`, `.broadPeak`, `.bedgraph`, `.bw`, `.control_lambda.bdg`,`.treat_pileup.bdg`,`peaks.xls).
 
 #### `chromatin_count_normalization/`
 - Contains the analysis_summary.txt and also the the cpm and raw matrices used for the chromatin fragment counter

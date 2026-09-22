@@ -10,9 +10,11 @@ process call_peaks {
   tuple val(sampleId), val(enrichment_mark), val(read_method), path(sampleBam), path(sampleControl)
 
   output:
-  tuple val(sampleId), val(enrichment_mark), val(read_method), val('*treat_pileup.bdg'), val('*control_lambda.bdg'), path('*narrowPeak'), path("*.xls"), path("macs2_mqc_versions.yml")
+  tuple val(sampleId), val(enrichment_mark), val(read_method), val('*treat_pileup.bdg'), val('*control_lambda.bdg'), path("${sampleId}_peaks.${peakExtension}"), path("*.xls"), path("macs2_mqc_versions.yml")
 
   script:
+  peakExtension = params.broad_peak_marks.any { it.equalsIgnoreCase(enrichment_mark) } ? 'broadPeak' : 'narrowPeak'
+  def peakModeArgs = peakExtension == 'broadPeak' ? '--broad' : ''
   def bamFormat = ""
   def macs2Command = ""
 
@@ -25,14 +27,14 @@ process call_peaks {
   if (sampleControl.name == "${params.dummy_control_file_name}") {
     macs2Command = """
     macs2 \\
-      callpeak --SPMR -B -q 0.01 --keep-dup 1 -g hs -f ${bamFormat} --extsize 146 --nomodel \\
+      callpeak --SPMR -B -q 0.01 ${peakModeArgs} --keep-dup 1 -g hs -f ${bamFormat} --extsize 146 --nomodel \\
       -t $sampleBam \\
       -n $sampleId --bdg
     """
   } else {
     macs2Command = """
     macs2 \\
-      callpeak --SPMR -B -q 0.01 --keep-dup 1 -g hs -f ${bamFormat} --extsize 146 --nomodel \\
+      callpeak --SPMR -B -q 0.01 ${peakModeArgs} --keep-dup 1 -g hs -f ${bamFormat} --extsize 146 --nomodel \\
       -t $sampleBam \\
       -c $sampleControl \\
       -n $sampleId --bdg
