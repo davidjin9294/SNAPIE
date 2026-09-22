@@ -6,7 +6,7 @@ process peaks_annotations {
     publishDir "${workflow.projectDir}/${params.outputFolder}/reports/multiqc/", mode : 'copy'
     
     input:
-    path (chNarrowPeakFiles)
+    path (chPeakRegionFiles)
     each path (chRGenomicAnnotation)
 
     output:

@@ -2,12 +2,12 @@
 set -euo pipefail
 
 if [ "$#" -ne 4 ]; then
-    echo "Usage: $0 BAF_TSV NARROW_PEAK SAMPLE_ID OUTPUT_TSV" >&2
+    echo "Usage: $0 BAF_TSV PEAK_FILE SAMPLE_ID OUTPUT_TSV" >&2
     exit 1
 fi
 
 python3 - "$@" <<'PYTHON'
-"""Calculate PSAS from a sample BAF TSV and its MACS2 narrowPeak file."""
+"""Calculate PSAS from a sample BAF TSV and its MACS2 peak file."""
 
 import argparse
 import bisect
@@ -22,7 +22,7 @@ AUTOSOMES = {str(chrom) for chrom in range(1, 23)}
 def arguments():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("baf_tsv")
-    parser.add_argument("narrow_peak")
+    parser.add_argument("peak_file")
     parser.add_argument("sample_id")
     parser.add_argument("output_tsv")
     return parser.parse_args()
@@ -113,7 +113,7 @@ def calculate_psas(baf_path, peak_path):
 
 def main():
     args = arguments()
-    psas = calculate_psas(args.baf_tsv, args.narrow_peak)
+    psas = calculate_psas(args.baf_tsv, args.peak_file)
     if psas is not None:
         psas = psas * (-1)
     with open(args.output_tsv, "w", newline="") as handle:

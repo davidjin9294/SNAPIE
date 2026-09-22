@@ -2,7 +2,7 @@
 
 #' @title Genomic Feature Annotation and Visualization Tool
 #' @description Create comprehensive genomic feature annotations and visualizations for ChIP-seq/ATAC-seq peaks
-#' @param input_dir Directory containing narrowPeak files
+#' @param input_dir Directory containing narrowPeak or broadPeak files
 #' @param output_dir Output directory for results
 #' @param pattern File pattern to match in input directory
 #' @param upstream Upstream distance from TSS for promoter annotation
@@ -26,16 +26,16 @@ script_start_time <- Sys.time()
 # Define command line options
 option_list <- list(
   make_option(c("-i", "--input_dir"), type="character", default=NULL,
-              help="Directory containing narrowPeak files [required]"),
+              help="Directory containing narrowPeak or broadPeak files [required]"),
   make_option(c("-o", "--output_dir"), type="character", default="./annotation_results",
               help="Output directory for results [default: %default]"),
-  make_option(c("-p", "--pattern"), type="character", default="*.narrowPeak",
+  make_option(c("-p", "--pattern"), type="character", default="_peaks[.](narrowPeak|broadPeak)$",
               help="File pattern to match in input directory [default: %default]"),
   make_option(c("-u", "--upstream"), type="integer", default=3000,
               help="Upstream distance from TSS for promoter annotation [default: %default]"),
   make_option(c("-d", "--downstream"), type="integer", default=3000,
               help="Downstream distance from TSS for promoter annotation [default: %default]"),
-  make_option(c("--sample_regex"), type="character", default="^(.*?)_peaks\\.narrowPeak$",
+  make_option(c("--sample_regex"), type="character", default="^(.*?)_peaks\\.(narrowPeak|broadPeak)$",
               help="Regular expression to extract sample name from filename [default: %default]"),
   make_option(c("--show_percentages"), type="logical", default=TRUE,
               help="Show percentages in pie chart legends [default: %default]"),
@@ -185,17 +185,20 @@ output_grid_plot <- TRUE
 facet_grid_plot <- FALSE
 
 #' @title Process Peak File
-#' @description Process a narrowPeak file and perform genomic annotation
-#' @param file_path Path to the narrowPeak file
+#' @description Process a narrowPeak or broadPeak file and perform genomic annotation
+#' @param file_path Path to the peak file
 #' @param sample_name Name of the sample
 #' @return Annotation object with genomic feature information
 process_peak_file <- function(file_path, sample_name) {
     cat("Processing", sample_name, "from", basename(file_path), "\n")
     
-    # Read narrowPeak format
-    peak_data <- read.table(file_path, header = FALSE, 
-                            col.names = c("chrom", "start", "end", "name", "score", 
-                                          "strand", "signalValue", "pValue", "qValue", "peak"))
+    # MACS2 broadPeak has nine columns; narrowPeak has an additional summit column.
+    peak_columns <- c("chrom", "start", "end", "name", "score",
+                      "strand", "signalValue", "pValue", "qValue")
+    if (grepl("\\.narrowPeak$", file_path)) {
+        peak_columns <- c(peak_columns, "peak")
+    }
+    peak_data <- read.table(file_path, header = FALSE, col.names = peak_columns)
     
     # Convert to GRanges object
     gr <- GRanges(
@@ -205,8 +208,7 @@ process_peak_file <- function(file_path, sample_name) {
         score = peak_data$score,
         signalValue = peak_data$signalValue,
         pValue = peak_data$pValue,
-        qValue = peak_data$qValue,
-        peak = peak_data$peak
+        qValue = peak_data$qValue
     )
     
     metadata(gr)$sample <- sample_name

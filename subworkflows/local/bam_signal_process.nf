@@ -146,13 +146,13 @@ workflow BAM_SIGNAL_PROCESSING {
     //***************************************************************
 
     chPeakAllFiles = chPeakFiles.collect()
-    chNarrowPeakFiles = chPeakAllFiles.map { collectedFiles ->
-    collectedFiles.findAll { it.toString().endsWith('.narrowPeak') }} // Filter the narrowPeak files
+    chPeakRegionFiles = chPeakAllFiles.map { collectedFiles ->
+    collectedFiles.findAll { it.toString().endsWith('.narrowPeak') || it.toString().endsWith('.broadPeak') }}
 
-    chPeaksFilesReport = peaks_report(chNarrowPeakFiles,chMultiQCPeaksHeader,chReportPeaks)
+    chPeaksFilesReport = peaks_report(chPeakRegionFiles,chMultiQCPeaksHeader,chReportPeaks)
 
      if (params.report_peak_genomic_annotation == true){
-        chPeaksAnnotationReport = peaks_annotations(chNarrowPeakFiles,chRGenomicAnnotation)
+        chPeaksAnnotationReport = peaks_annotations(chPeakRegionFiles,chRGenomicAnnotation)
      } else {
         chPeaksAnnotationReport = Channel.of("NO_DATA")
      }

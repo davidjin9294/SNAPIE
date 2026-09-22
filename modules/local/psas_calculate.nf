@@ -6,7 +6,7 @@ process psas_calculate {
   tag "Sample - ${sampleId}"
 
   input:
-  tuple val(sampleId), path(bafTsv), path(narrowPeak)
+  tuple val(sampleId), path(bafTsv), path(peakFile)
   path psasScript
 
   output:
@@ -14,6 +14,6 @@ process psas_calculate {
 
   script:
   """
-  bash "${psasScript}" "${bafTsv}" "${narrowPeak}" "${sampleId}" "${sampleId}.psas.tsv"
+  bash "${psasScript}" "${bafTsv}" "${peakFile}" "${sampleId}" "${sampleId}.psas.tsv"
   """
 }

@@ -7,7 +7,7 @@ process peaks_report {
     
 
     input:
-    path (chNarrowPeakFiles)
+    path (chPeakRegionFiles)
     each path (chMultiQCPeaksHeader)
     each path (chReportPeaks)
 

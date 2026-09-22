@@ -92,8 +92,11 @@ else:
     dfJoin = dfJoin.drop(columns=['psas'], errors='ignore')
 
 dfJoin = dfJoin.where(pd.notnull(dfJoin), '')
+sort_columns = ['Sample']
+if 'Enrichment_Mark' in dfJoin.columns:
+    sort_columns.append('Enrichment_Mark')
 dfJoin = dfJoin.sort_values(
-    by=['Sample', 'Enrichment_Mark'],
+    by=sort_columns,
     kind='mergesort'
 )
 

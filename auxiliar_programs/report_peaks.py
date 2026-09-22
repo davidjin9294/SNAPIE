@@ -51,7 +51,7 @@ def read_file(str_path):
     return content
 
 # Define the suffix
-suffix_peak = '_peaks.narrowPeak'
+peak_suffixes = ('_peaks.narrowPeak', '_peaks.broadPeak')
 
 name_head_file_peaks = 'peaks_header.txt'
 
@@ -62,7 +62,8 @@ current_directory = os.getcwd()
 head_file_peaks = find_files_with_suffix(current_directory, name_head_file_peaks)[0]
 head_file_content_peaks = read_file(head_file_peaks)
 
-peak_files = find_files_with_suffix(current_directory, suffix_peak) 
+peak_files = [path for suffix in peak_suffixes
+              for path in find_files_with_suffix(current_directory, suffix)]
 
 def create_dataframe_from_content_files(file_list,sufix,nameColumn,read_content=True):
     """
@@ -93,7 +94,19 @@ def create_dataframe_from_content_files(file_list,sufix,nameColumn,read_content=
     df = pd.DataFrame(data)
     return df
 
-df_peaks = create_dataframe_from_content_files(peak_files,suffix_peak,'Peaks',False)
+def count_peaks(path):
+    with open(path) as peak_file:
+        return sum(1 for _ in peak_file)
+
+
+df_peaks = pd.DataFrame([
+    {
+        'SampleName': next(os.path.basename(path)[:-len(suffix)]
+                           for suffix in peak_suffixes if path.endswith(suffix)),
+        'Peaks': count_peaks(path)
+    }
+    for path in peak_files
+], columns=['SampleName', 'Peaks'])
 #merged_df = pd.merge(df_frags, df_peaks, on='SampleName', how='inner')
 
 # CSV file path
