@@ -14,7 +14,7 @@ process call_peaks {
 
   script:
   peakExtension = params.broad_peak_marks.any { it.equalsIgnoreCase(enrichment_mark) } ? 'broadPeak' : 'narrowPeak'
-  def peakModeArgs = peakExtension == 'broadPeak' ? '--broad' : ''
+  def peakModeArgs = peakExtension == 'broadPeak' ? '--broad --broad-cutoff 0.1' : ''
   def bamFormat = ""
   def macs2Command = ""
 
